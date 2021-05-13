@@ -222,7 +222,7 @@ rdrobust_vce = function(d, s, RX, res, C) {
   k = ncol(as.matrix(RX))
   M = matrix(0,k,k)
   n  = length(C)
-  if (is.null(C)) {
+  if (is.null(C) | length(unique(C))==1) {
     w = 1
     if (d==0){
       M  = crossprod(c(res)*RX)
