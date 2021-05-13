@@ -5,7 +5,7 @@ rdrobust = function(y, x, c = NULL, fuzzy = NULL, deriv = NULL,
                     vce = "nn", cluster = NULL, nnmatch = 3, level = 95, 
                     scalepar = 1, scaleregul = 1, sharpbw = FALSE, 
                     all = NULL, subset = NULL, masspoints = "adjust",
-                    bwcheck = NULL, bwrestrict=TRUE, stdvars=FALSE) {
+                    bwcheck = NULL, bwrestrict=TRUE, stdvars=FALSE, silent = TRUE) {
   
   if (!is.null(subset)) {
     x <- x[subset]
@@ -219,7 +219,7 @@ rdrobust = function(y, x, c = NULL, fuzzy = NULL, deriv = NULL,
     mass_l = 1-M_l/N_l
     mass_r = 1-M_r/N_r				
     if (mass_l>=0.1 | mass_r>=0.1){
-      print("Mass points detected in the running variable.")
+      if(silent==FALSE) print("Mass points detected in the running variable.")
       if (masspoints=="check") print("Try using option masspoints=adjust.")
       if (is.null(bwcheck) & masspoints=="adjust") bwcheck <- 10
     }				
