@@ -3,7 +3,7 @@ rdbwselect = function(y, x, c = NULL, fuzzy = NULL, deriv = NULL, p = NULL, q = 
                       kernel = "tri", weights = NULL, bwselect = "mserd", 
                       vce = "nn", cluster = NULL, 
                       nnmatch = 3,  scaleregul = 1, sharpbw = FALSE,  
-                      all = NULL, subset = NULL, masspoints = "adjust",
+                      all = NULL, subset = NULL, masspoints = "adjust", silent = TRUE,
                       bwcheck = NULL, bwrestrict=TRUE, stdvars=FALSE, prchk=TRUE){
   
 
@@ -133,7 +133,7 @@ rdbwselect = function(y, x, c = NULL, fuzzy = NULL, deriv = NULL, p = NULL, q = 
     mass_l = 1-M_l/N_l
     mass_r = 1-M_r/N_r				
     if (mass_l>=0.1 | mass_r>=0.1){
-      print("Mass points detected in the running variable.")
+      if (silent==FALSE) print("Mass points detected in the running variable.")
       if (masspoints=="check") print("Try using option masspoints=adjust.")
       if (is.null(bwcheck) & masspoints=="adjust") bwcheck <- 10
     }				

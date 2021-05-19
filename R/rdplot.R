@@ -1,10 +1,9 @@
 rdplot = function(y, x, c=0, p=4, nbins = NULL, binselect = "esmv", scale = NULL, 
                   kernel = "uni", weights = NULL, h = NULL, 
                   covs = NULL,  covs_eval = "mean", covs_drop = TRUE,
-                  support = NULL, subset = NULL, masspoints = "adjust",
-                  hide = FALSE, ci = NULL, shade = FALSE, 
-                  title = NULL, x.label = NULL, y.label = NULL, x.lim = NULL, y.lim = NULL, 
-                  col.dots = NULL, col.lines = NULL) {
+                  support = NULL, subset = NULL, masspoints = "adjust", silent = TRUE,
+                  hide = FALSE, ci = NULL, shade = FALSE, poly = TRUE,
+                  title = NULL, x.label = NULL, y.label = NULL, x.lim = NULL, y.lim = NULL) {
 
   if (!is.null(subset)) {
     x <- x[subset]
@@ -97,7 +96,7 @@ rdplot = function(y, x, c=0, p=4, nbins = NULL, binselect = "esmv", scale = NULL
     mass_l = 1-M_l/n_l
     mass_r = 1-M_r/n_r				
     if (mass_l>=0.2 | mass_r>=0.2){
-      print("Mass points detected in the running variable.")
+      if (silent==FALSE) print("Mass points detected in the running variable.")
       if (masspoints=="check") print("Try using option masspoints=adjust.")
       if (masspoints=="adjust") {
         if (binselect=="es")    binselect="espr"
@@ -494,10 +493,6 @@ rdplot = function(y, x, c=0, p=4, nbins = NULL, binselect = "esmv", scale = NULL
 	rdplot_cir_bin = rdplot_mean_y + quant*rdplot_se_y
 	temp_plot =NULL
 	
-  if (hide=="FALSE") {
-  
-    if (is.null(col.lines)) col.lines = "red"
-    if (is.null(col.dots))  col.dots  = "darkblue"
     #if (is.null(type.dots)) type.dots = 20
     if (is.null(title)) title="RD Plot"
     if (is.null(x.label)) x.label="X axis"
@@ -509,10 +504,18 @@ rdplot = function(y, x, c=0, p=4, nbins = NULL, binselect = "esmv", scale = NULL
     data_bins <- data.frame(rdplot_mean_bin, rdplot_mean_y, rdplot_cil_bin, rdplot_cir_bin)
     data_poly <- data.frame(x_plot_l, y_hat_l, x_plot_r, y_hat_r)
     
-    temp_plot <- ggplot() + theme_bw() +
-        geom_point(data=data_bins, aes(x=rdplot_mean_bin, y=rdplot_mean_y), col=col.dots, na.rm=TRUE) +
-        geom_line( data=data_poly, aes(x=x_plot_l, y=y_hat_l), col=col.lines, na.rm=TRUE) +
-        geom_line( data=data_poly, aes(x=x_plot_r, y=y_hat_r), col=col.lines, na.rm=TRUE) 
+    temp_plot <- ggplot() + theme_light() +
+        geom_point(data=data_bins, aes(x=rdplot_mean_bin, y=rdplot_mean_y), col=col.dots, na.rm=TRUE)
+    
+    if (poly==FALSE) {
+        temp_plot <- temp_plot +
+                geom_smooth(data = filter(data_bins, rdplot_mean_bin > c), aes(x = rdplot_mean_bin, y = rdplot_mean_y))+
+                geom_smooth(data = filter(data_bins, rdplot_mean_bin <= c), aes(x = rdplot_mean_bin, y = rdplot_mean_y))
+    } else {
+        temp_plot <- temp_plot +
+                geom_line( data=data_poly, aes(x=x_plot_l, y=y_hat_l), col=col.lines, na.rm=TRUE) +
+                geom_line( data=data_poly, aes(x=x_plot_r, y=y_hat_r), col=col.lines, na.rm=TRUE) 
+    }
 
     if (flag_no_ci==FALSE)
     temp_plot <- temp_plot +
@@ -526,6 +529,8 @@ rdplot = function(y, x, c=0, p=4, nbins = NULL, binselect = "esmv", scale = NULL
       coord_cartesian(xlim = x.lim, ylim = y.lim) +
       theme(legend.position = "None") +
       geom_vline(xintercept = c, size = 0.5) 
+    
+  if (hide=="FALSE") {
     print(temp_plot)
     }
 
