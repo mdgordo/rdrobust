@@ -435,8 +435,8 @@ rdplot = function(y, x, c=0, p=4, nbins = NULL, binselect = "esmv", scale = NULL
   for (k in 1:(J_star_r-1)) bin_x_r[x_r>=jumps_r[k] & x_r<jumps_r[k+1]] = k 
 	bin_x_r[x_r>=jumps_r[(J_star_r)]] = J_star_r
   
-  rdplot_mean_bin_l=rdplot_mean_x_l=rdplot_mean_y_l=rep(0,J_star_l)
-	rdplot_mean_bin_r=rdplot_mean_x_r=rdplot_mean_y_r=rep(0,J_star_r)
+  rdplot_mean_bin_l=rdplot_mean_x_l=rdplot_mean_y_l=rdplot_n_l=rep(0,J_star_l)
+	rdplot_mean_bin_r=rdplot_mean_x_r=rdplot_mean_y_r=rdplot_n_r=rep(0,J_star_r)
 
 	if (!is.null(covs) & covs_eval=="mean") {
 	  covs_model_l = lm(y_l~ z_l + factor(bin_x_l)) 
@@ -445,12 +445,17 @@ rdplot = function(y, x, c=0, p=4, nbins = NULL, binselect = "esmv", scale = NULL
 	  yhatZ_r = predict(covs_model_r)
 
 	}
-	
+        
+	plt_w_l=rep(1, length(x_l)); plt_w_r=rep(1, length(x_r))
+	if(!is.null(weights)) {
+	        plt_w_l=weights[x<c]; plt_w_r=weights[x>=c]
+	}
 
 	for (k in 1:(J_star_l)) {
 	  rdplot_mean_bin_l[k]    = mean(c(jumps_l[k],jumps_l[k+1]))
 	  rdplot_mean_x_l[k]      = mean(x_l[bin_x_l==-k])
 	  rdplot_mean_y_l[k]      = mean(y_l[bin_x_l==-k])
+	  rdplot_n_l[k]           = sum(plt_w_l[bin_x_l==-k])
 	  if (!is.null(covs) & covs_eval=="mean") rdplot_mean_y_l[k] = mean(yhatZ_l[bin_x_l==-k])
 	}
 	
@@ -460,7 +465,8 @@ rdplot = function(y, x, c=0, p=4, nbins = NULL, binselect = "esmv", scale = NULL
 	for (k in 1:(J_star_r)) {
 	  rdplot_mean_bin_r[k]  = mean(c(jumps_r[k],jumps_r[k+1]))
 	  rdplot_mean_x_r[k]    = mean(x_r[bin_x_r==k])
-	  rdplot_mean_y_r[k]    = mean(y_r[bin_x_r==k]) 
+	  rdplot_mean_y_r[k]    = mean(y_r[bin_x_r==k])
+	  rdplot_n_r[k]         = sum(plt_w_r[bin_x_r==k]) 
 	  if (!is.null(covs) & covs_eval=="mean") rdplot_mean_y_r[k] = mean(yhatZ_r[bin_x_r==k])
 	}
 	
@@ -471,6 +477,7 @@ rdplot = function(y, x, c=0, p=4, nbins = NULL, binselect = "esmv", scale = NULL
   rdplot_mean_bin = c(rdplot_mean_bin_l, rdplot_mean_bin_r)
   rdplot_mean_x   = c(rdplot_mean_x_l,   rdplot_mean_x_r)
 	rdplot_mean_y   = c(rdplot_mean_y_l,   rdplot_mean_y_r)
+	rdplot_n_wt = c(rdplot_n_l, rdplot_n_r)
 	
 	rdplot_sd_y_l=rdplot_N_l=rdplot_sd_y_r=rdplot_N_r=0
 	for (j in 1:(J_star_l)) {
@@ -501,16 +508,16 @@ rdplot = function(y, x, c=0, p=4, nbins = NULL, binselect = "esmv", scale = NULL
     #if (is.null(y.lim)) y.lim=c(min(c(y_l,y_r)),max(c(y_l,y_r)))
     #if (is.null(y.lim)) y.lim=c(min(rdplot_mean_y),max(rdplot_mean_y))
     
-    data_bins <- data.frame(rdplot_mean_bin, rdplot_mean_y, rdplot_cil_bin, rdplot_cir_bin)
+    data_bins <- data.frame(rdplot_mean_bin, rdplot_mean_y, rdplot_cil_bin, rdplot_cir_bin, rdplot_n_wt)
     data_poly <- data.frame(x_plot_l, y_hat_l, x_plot_r, y_hat_r)
     
     temp_plot <- ggplot() + theme_light() +
-        geom_point(data=data_bins, aes(x=rdplot_mean_bin, y=rdplot_mean_y), na.rm=TRUE)
+        geom_point(data=data_bins, aes(x=rdplot_mean_bin, y=rdplot_mean_y, size = rdplot_n_wt), na.rm=TRUE)
     
     if (poly==FALSE) {
         temp_plot <- temp_plot +
-                geom_smooth(data = filter(data_bins, rdplot_mean_bin > c), aes(x = rdplot_mean_bin, y = rdplot_mean_y))+
-                geom_smooth(data = filter(data_bins, rdplot_mean_bin <= c), aes(x = rdplot_mean_bin, y = rdplot_mean_y))
+                geom_smooth(data = filter(data_bins, rdplot_mean_bin >= c), aes(x = rdplot_mean_bin, y = rdplot_mean_y, weight = rdplot_n_wt))+
+                geom_smooth(data = filter(data_bins, rdplot_mean_bin < c), aes(x = rdplot_mean_bin, y = rdplot_mean_y, weight = rdplot_n_wt))
     } else {
         temp_plot <- temp_plot +
                 geom_line( data=data_poly, aes(x=x_plot_l, y=y_hat_l), na.rm=TRUE) +
