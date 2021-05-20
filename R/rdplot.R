@@ -461,6 +461,7 @@ rdplot = function(y, x, c=0, p=4, nbins = NULL, binselect = "esmv", scale = NULL
 	
 	rdplot_mean_y_l = rev(rdplot_mean_y_l)
 	rdplot_mean_x_l = rev(rdplot_mean_x_l)
+	rdplot_n_l = rev(rdplot_n_l)
 	
 	for (k in 1:(J_star_r)) {
 	  rdplot_mean_bin_r[k]  = mean(c(jumps_r[k],jumps_r[k+1]))
@@ -501,7 +502,7 @@ rdplot = function(y, x, c=0, p=4, nbins = NULL, binselect = "esmv", scale = NULL
 	temp_plot =NULL
 	
     #if (is.null(type.dots)) type.dots = 20
-    if (is.null(title)) title="RD Plot"
+    if (!is.null(title)) title=title else title=NULL
     if (is.null(x.label)) x.label="X axis"
     if (is.null(y.label)) y.label="Y axis"
     #if (is.null(x.lim)) x.lim=c(min(x_l),max(x_r))
