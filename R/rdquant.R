@@ -2,21 +2,31 @@
 #' see Frandsen, Frolich and Melly (2010). "Quantile Treatment Effects in the Regression Discontinuity Design"
 #'  
 #' @param Y a numeric vector
-#' @param grid an integer determining how finely to estimate pdfs
+#' @param x a numeric vector
+#' @param fuzzy a binary vector indicating dummy for treatment
+#' @param c a double for the cutoff point
 #' @return a data frame of y values, coefficients, and standard errors
 #' @export
 
-rdquant <- function(Y, grid = 50, ...){
-        yvals <- seq(min(Y), max(Y), length.out = grid)
-        yvals <- yvals[c(2:(grid - 1))]
-        out <- data.frame("yvals" = yvals,
-                          "coef" = c(),
-                          "se" = c())
-        for (i in c(1:grid)) {
-                yi <- as.numeric(Y>yvals[i])
-                rdout <- rdrobust(y = yi, ...)
-                out$coef[i] <- rdout$coef["Conventional",]
-                out$se[i] <- rdout$se["Robust",]
+rdquant <- function(Y, x, fuzzy = NULL, c = 0, ...){
+        yvals <- quantile(Y, seq(.05, .95, .05))
+        out_1 <- data.frame("yvals" = yvals,
+                            "coef" = rep(NA, length(yvals)),
+                            "se" = rep(NA, length(yvals)),
+                            "treatment" = rep(1, length(yvals)))
+        out_0 <- out_1
+        out_0$treatment <- 0
+        if (is.null(fuzzy)) fuzzy <- ifelse(Y>c, 1, 0)
+        for (i in c(1:length(yvals))) {
+                yi <- as.numeric(Y<yvals[i])
+                y1d <- yi*fuzzy
+                y0d <- yi*(1 - fuzzy)
+                rd1out <- rdrobust(y = y1d, x = dfq$dist_2_14, fuzzy = dfq$aid_cumulative, c = 0, weights = dfq$wt_hh, cluster = dfq$strata, vce = "hc1", covs = qcovs)
+                rd0out <- rdrobust(y = y0d, x = dfq$dist_2_14, fuzzy = dfq$aid_cumulative, c = 0, weights = dfq$wt_hh, cluster = dfq$strata, vce = "hc1", covs = qcovs)
+                out_1$coef[i] <- rd1out$coef["Conventional",]
+                out_1$se[i] <- rd1out$se["Robust",]
+                out_0$coef[i] <- rd0out$coef["Conventional",]
+                out_0$se[i] <- rd0out$se["Robust",]
         }
-        return(out)
+        return(rbind(out_1, out_0))
 }

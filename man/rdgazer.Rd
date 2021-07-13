@@ -4,10 +4,14 @@
 \alias{rdgazer}
 \title{Function for putting rdrobust output into stargazer format}
 \usage{
-rdgazer(rdlist, dvlabs = c(1:length(rdlist)), xlines = NULL, ...)
+rdgazer(rdlist, dvlabs = NULL, xlines = NULL, ...)
 }
 \arguments{
 \item{rdlist}{takes a list of rdrobust objects}
+
+\item{dvlabs}{takes a character vector of dependent variable labels}
+
+\item{xlines}{passes extra lines to stargazer's add lines argument}
 }
 \value{
 a stargazer object

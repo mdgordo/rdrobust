@@ -5,12 +5,16 @@
 \title{Quantile regression in regression discontinuity framework 
 see Frandsen, Frolich and Melly (2010). "Quantile Treatment Effects in the Regression Discontinuity Design"}
 \usage{
-rdquant(Y, grid = 50, ...)
+rdquant(Y, x, fuzzy = NULL, c = 0, ...)
 }
 \arguments{
 \item{Y}{a numeric vector}
 
-\item{grid}{an integer determining how finely to estimate pdfs}
+\item{x}{a numeric vector}
+
+\item{fuzzy}{a binary vector indicating dummy for treatment}
+
+\item{c}{a double for the cutoff point}
 }
 \value{
 a data frame of y values, coefficients, and standard errors
