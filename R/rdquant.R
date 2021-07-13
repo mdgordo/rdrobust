@@ -1,7 +1,10 @@
-### Quantile regression in regression discontinuity framework 
-## see Frandsen, Frolich and Melly (2010). "Quantile Treatment Effects in the Regression Discontinuity Design"
-## grid controls how finely to estimate pdf
-## returns a data.frame of y values, coefficient estimates, and standard errors 
+#' Quantile regression in regression discontinuity framework 
+#' see Frandsen, Frolich and Melly (2010). "Quantile Treatment Effects in the Regression Discontinuity Design"
+#'  
+#' @param Y a numeric vector
+#' @param grid an integer determining how finely to estimate pdfs
+#' @return a data frame of y values, coefficients, and standard errors
+#' @export
 
 rdquant <- function(Y, grid = 50, ...){
         yvals <- seq(min(Y), max(Y), length.out = grid)

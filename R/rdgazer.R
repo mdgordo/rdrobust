@@ -1,6 +1,9 @@
-## Function for putting rdrobust output into stargazer format
-# rdlist takes a list of rdrobust objects
-# 
+#' Function for putting rdrobust output into stargazer format
+#' 
+#' 
+#' @param rdlist takes a list of rdrobust objects
+#' @return a stargazer object
+#' @export
 
 rdgazer <- function(rdlist, dvlabs = c(1:length(rdlist)), xlines = NULL, ...){
         dummymods <- list(); coef <- list(); se <- list(); bw <- c(); nobs <- c(); dvlabs <- c(); depvarmean <- c()
