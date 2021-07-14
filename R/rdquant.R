@@ -26,8 +26,8 @@ rdquant <- function(Y, x, fuzzy = NULL, c = 0, grid = .01, qstep = .05, indices,
         coefs0 <- lapply(mods0, function(x) x$coef["Conventional",])
         ses1 <- lapply(mods1, function(x) x$se["Robust",])
         ses0 <- lapply(mods0, function(x) x$se["Robust",])
-        r1 <- rearrangement(x = data.frame(yvals1), y = coefs1)
-        r0 <- rearrangement(x = data.frame(yvals0), y = coefs0)
+        r1 <- Rearrangement::rearrangement(x = data.frame(yvals1), y = coefs1)
+        r0 <- Rearrangement::rearrangement(x = data.frame(yvals0), y = coefs0)
         q1 <- sapply(seq(.05, .95, qstep), function(x) min(yvals1[r1>x]))
         q0 <- sapply(seq(.05, .95, qstep), function(x) min(yvals0[r0>x]))
         q <- q1 - q0
