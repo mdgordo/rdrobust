@@ -34,6 +34,7 @@ rdquant <- function(Y, x, fuzzy = NULL, c = 0, grid = .01, qstep = .05, indices,
         pdfdf <- data.frame("yvals" = c(yvals1, yvals0),
                             "coefs" = c(coefs1, coefs0),
                             "se" = c(ses1, ses0),
+                            "rcoefs" = c(r1, r0),
                             "treat" = c(rep(1, length(yvals1)), rep(0, length(yvals0))))
         return(list("pdfs" = pdfdf, "qte" = q))
 }
