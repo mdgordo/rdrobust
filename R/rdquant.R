@@ -31,5 +31,9 @@ rdquant <- function(Y, x, fuzzy = NULL, c = 0, grid = .01, qstep = .05, indices,
         q1 <- sapply(seq(.05, .95, qstep), function(x) min(yvals1[r1>x]))
         q0 <- sapply(seq(.05, .95, qstep), function(x) min(yvals0[r0>x]))
         q <- q1 - q0
-        return(list(yvals1, yvals0, coefs1, coefs0, ses1, ses0, q))
+        pdfdf <- data.frame("yvals" = c(yvals1, yvals0),
+                            "coefs" = c(coefs1, coefs0),
+                            "se" = c(ses1, ses0),
+                            "treat" = c(rep(1, length(yvals1)), rep(0, length(yvals0)))
+        return(list(pdfdf, q))
 }
