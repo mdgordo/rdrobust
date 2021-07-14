@@ -16,7 +16,7 @@ rdquant <- function(Y, x, fuzzy = NULL, c = 0, grid = .01, qstep = .05, indices,
         yvals1 <- quantile(Y[fuzzy==1], seq(.05, .95, grid))
         yvals0 <- quantile(Y[fuzzy0==1], seq(.05, .95, grid))
         coefs <- function(qinv, f){
-                y1d <- as.numeric(Y<qinv)*f
+                y1d <- as.numeric(Y<=qinv)*f
                 rd1out <- rdrobust(y = y1d, x = x, fuzzy = f, c = c, ...)
                 return(rd1out)
         }
