@@ -10,7 +10,7 @@
 #' @return list of coefficients, standard errors and quantile treatment effect standard errors
 #' @export
 
-rdquant <- function(data, x, fuzzy = NULL, c = 0, grid = .01, qstep = .05, indices, ...){
+rdquant <- function(Y, x, fuzzy = NULL, c = 0, grid = .01, qstep = .05, indices, ...){
         if (is.null(fuzzy)) fuzzy <- ifelse(Y>c, 1, 0)
         fuzzy0 <- 1 - fuzzy
         yvals1 <- quantile(Y[fuzzy==1], seq(.05, .95, grid))
