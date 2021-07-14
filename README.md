@@ -5,4 +5,4 @@ Adds function for Regression Discontinuity Quantile Treatment Effects (see Frand
 
 Adds function for exporting rdrobust output to stargazer.
 
-Allows for customization of RD plots and plotting in GGplot.
+Allows for customization of RD plots and plotting in GGplot including for weighted observations.
