@@ -17,12 +17,13 @@ rdquant <- function(Y, x, fuzzy = NULL, c = 0, ...){
         out_0 <- out_1
         out_0$treatment <- 0
         if (is.null(fuzzy)) fuzzy <- ifelse(Y>c, 1, 0)
+        fuzzy0 <- 1 - fuzzy
         for (i in c(1:length(yvals))) {
                 yi <- as.numeric(Y<yvals[i])
                 y1d <- yi*fuzzy
-                y0d <- yi*(1 - fuzzy)
-                rd1out <- rdrobust(y = y1d, x = dfq$dist_2_14, fuzzy = dfq$aid_cumulative, c = 0, weights = dfq$wt_hh, cluster = dfq$strata, vce = "hc1", covs = qcovs)
-                rd0out <- rdrobust(y = y0d, x = dfq$dist_2_14, fuzzy = dfq$aid_cumulative, c = 0, weights = dfq$wt_hh, cluster = dfq$strata, vce = "hc1", covs = qcovs)
+                y0d <- yi*fuzzy0
+                rd1out <- rdrobust(y = y1d, x = x, fuzzy = fuzzy, c = c, ...)
+                rd0out <- rdrobust(y = y0d, x = x, fuzzy = fuzzy0, c = c, ...)
                 out_1$coef[i] <- rd1out$coef["Conventional",]
                 out_1$se[i] <- rd1out$se["Robust",]
                 out_0$coef[i] <- rd0out$coef["Conventional",]
