@@ -22,10 +22,10 @@ rdquant <- function(Y, x, fuzzy = NULL, c = 0, grid = .01, qstep = .05, indices,
         }
         mods1 <- lapply(yvals1, FUN = coefs, f = fuzzy)
         mods0 <- lapply(yvals0, FUN = coefs, f = fuzzy0)
-        coefs1 <- lapply(mods1, function(x) x$coef["Conventional",])
-        coefs0 <- lapply(mods0, function(x) x$coef["Conventional",])
-        ses1 <- lapply(mods1, function(x) x$se["Robust",])
-        ses0 <- lapply(mods0, function(x) x$se["Robust",])
+        coefs1 <- as.numeric(lapply(mods1, function(x) x$coef["Conventional",]))
+        coefs0 <- as.numeric(lapply(mods0, function(x) x$coef["Conventional",]))
+        ses1 <- as.numeric(lapply(mods1, function(x) x$se["Robust",]))
+        ses0 <- as.numeric(lapply(mods0, function(x) x$se["Robust",]))
         r1 <- Rearrangement::rearrangement(x = data.frame(yvals1), y = coefs1)
         r0 <- Rearrangement::rearrangement(x = data.frame(yvals0), y = coefs0)
         q1 <- sapply(seq(.05, .95, qstep), function(x) min(yvals1[r1>x]))
@@ -34,6 +34,6 @@ rdquant <- function(Y, x, fuzzy = NULL, c = 0, grid = .01, qstep = .05, indices,
         pdfdf <- data.frame("yvals" = c(yvals1, yvals0),
                             "coefs" = c(coefs1, coefs0),
                             "se" = c(ses1, ses0),
-                            "treat" = c(rep(1, length(yvals1)), rep(0, length(yvals0)))
-        return(list(pdfdf, q))
+                            "treat" = c(rep(1, length(yvals1)), rep(0, length(yvals0))))
+        return(list("pdfs" = pdfdf, "qte" = q))
 }
