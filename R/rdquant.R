@@ -7,7 +7,7 @@
 #' @param c a double for the cutoff point
 #' @param grid a double between 0 and 1 controlling how finely to estimate the pdfs
 #' @param qstep a double between 0 and 1 controlling which quantile treatment effects to return
-#' @return list of coefficients, standard errors and quantile treatment effect standard errors
+#' @return a dataframe of coefficients, standard errors and quantile treatment effect standard errors, and rearranged estimates, and a vector of quantile treatment effect estimates
 #' @export
 
 rdquant <- function(Y, x, fuzzy = NULL, c = 0, grid = .01, qstep = .05, ...){
@@ -28,13 +28,21 @@ rdquant <- function(Y, x, fuzzy = NULL, c = 0, grid = .01, qstep = .05, ...){
         ses0 <- as.numeric(lapply(mods0, function(x) x$se["Robust",]))
         r1 <- Rearrangement::rearrangement(x = data.frame(yvals1), y = coefs1)
         r0 <- Rearrangement::rearrangement(x = data.frame(yvals0), y = coefs0)
+        ci1 <- list("x" = yvals1, "y" = coefs1, "sortedx" = yvals1, "Lower" = coefs1 - ses1*1.96, "Upper" = coefs1 + ses1*1.96, "cef" = coefs1)
+        attr(ci1, "class") <- "conint"
+        rci1 <- rconint(ci1)
+        ci0 <- list("x" = yvals0, "y" = coefs0, "sortedx" = yvals0, "Lower" = coefs0 - ses0*1.96, "Upper" = coefs0 + ses0*1.96, "cef" = coefs0)
+        attr(ci0, "class") <- "conint"
+        rci0 <- rconint(ci0)
         q1 <- sapply(seq(.05, .95, qstep), function(x) min(yvals1[r1>x]))
         q0 <- sapply(seq(.05, .95, qstep), function(x) min(yvals0[r0>x]))
-        q <- q1 - q0
+        q <- q1 - q0 
         pdfdf <- data.frame("yvals" = c(yvals1, yvals0),
                             "coefs" = c(coefs1, coefs0),
                             "se" = c(ses1, ses0),
                             "rcoefs" = c(r1, r0),
+                            "rlower" = c(rci1$Lower, rci0$Lower),
+                            "rupper" = c(rci1$Upper, rci0$Upper),
                             "treat" = c(rep(1, length(yvals1)), rep(0, length(yvals0))))
         return(list("pdfs" = pdfdf, "qte" = q))
 }

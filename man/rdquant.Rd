@@ -5,9 +5,11 @@
 \title{Quantile regression in regression discontinuity framework 
 see Frandsen, Frolich and Melly (2010). "Quantile Treatment Effects in the Regression Discontinuity Design"}
 \usage{
-rdquant(data, x, fuzzy = NULL, c = 0, grid = 0.01, qstep = 0.05, indices, ...)
+rdquant(Y, x, fuzzy = NULL, c = 0, grid = 0.01, qstep = 0.05, ...)
 }
 \arguments{
+\item{Y}{a numeric vector}
+
 \item{x}{a numeric vector}
 
 \item{fuzzy}{a binary vector indicating dummy for treatment}
@@ -17,11 +19,9 @@ rdquant(data, x, fuzzy = NULL, c = 0, grid = 0.01, qstep = 0.05, indices, ...)
 \item{grid}{a double between 0 and 1 controlling how finely to estimate the pdfs}
 
 \item{qstep}{a double between 0 and 1 controlling which quantile treatment effects to return}
-
-\item{Y}{a numeric vector}
 }
 \value{
-list of coefficients, standard errors and quantile treatment effect standard errors
+a dataframe of coefficients, standard errors and quantile treatment effect standard errors, and rearranged estimates, and a vector of quantile treatment effect estimates
 }
 \description{
 Quantile regression in regression discontinuity framework 
