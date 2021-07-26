@@ -11,7 +11,7 @@
 #' @export
 
 rdquant <- function(Y, x, fuzzy = NULL, c = 0, grid = .01, qstep = .05, ...){
-        if (is.null(fuzzy)) fuzzy <- ifelse(Y>c, 1, 0)
+        if (is.null(fuzzy)) fuzzy <- ifelse(x>c, 1, 0)
         fuzzy0 <- 1 - fuzzy
         yvals1 <- quantile(Y[fuzzy==1], seq(.05, .95, grid), na.rm = TRUE)
         yvals0 <- quantile(Y[fuzzy0==1], seq(.05, .95, grid), na.rm = TRUE)
