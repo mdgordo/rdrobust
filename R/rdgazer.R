@@ -18,7 +18,7 @@ rdgazer <- function(rdlist, dvlabs = NULL, xlines = NULL, se_r = "Conventional",
                 nobs[i] <- sum(rdlist[[i]]$N_h)
                 untreatedmean[i] <- round(rdlist[[i]]$beta_p_l,2)
         }
-        s <- stargazer(dummymods, type = "text", coef = coef, se = se, column.labels = dvlabs,
+        s <- stargazer(dummymods, type = type, coef = coef, se = se, column.labels = dvlabs,
                        omit.stat = "all", digits = 2, df = FALSE, omit = c("Constant"), 
                        covariate.labels = c("Treatment"),
                        add.lines = c(list(c("N", nobs),
