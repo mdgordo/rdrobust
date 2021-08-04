@@ -8,7 +8,7 @@
 #' @return a stargazer object
 #' @export
 
-rdgazer <- function(rdlist, dvlabs = NULL, xlines = NULL, se_r = "Conventional", ...){
+rdgazer <- function(rdlist, dvlabs = NULL, xlines = NULL, se_r = "Conventional", type = "text", ...){
         dummymods <- list(); coef <- list(); se <- list(); bw <- c(); nobs <- c(); untreatedmean <- c()
         for (i in 1:length(rdlist)) {
                 dummymods[[i]] <- lm(rdlist[[i]]$Y ~ rdlist[[i]]$X)
