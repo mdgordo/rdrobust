@@ -4,15 +4,16 @@
 #' @param rdlist takes a list of rdrobust objects
 #' @param dvlabs takes a character vector of dependent variable labels
 #' @param xlines passes extra lines to stargazer's add lines argument
+#' @param se_r character either "Conventional" or "Robust"
 #' @return a stargazer object
 #' @export
 
-rdgazer <- function(rdlist, dvlabs = NULL, xlines = NULL, ...){
+rdgazer <- function(rdlist, dvlabs = NULL, xlines = NULL, se_r = "Conventional", ...){
         dummymods <- list(); coef <- list(); se <- list(); bw <- c(); nobs <- c(); untreatedmean <- c()
         for (i in 1:length(rdlist)) {
                 dummymods[[i]] <- lm(rdlist[[i]]$Y ~ rdlist[[i]]$X)
                 coef[[i]] <- c(0, rdlist[[i]]$coef["Conventional",])
-                se[[i]] <- c(1, rdlist[[i]]$se["Robust",])
+                se[[i]] <- c(1, rdlist[[i]]$se[se_r,])
                 bw[i] <- round(rdlist[[i]]$bws[1,1],2)
                 nobs[i] <- sum(rdlist[[i]]$N_h)
                 untreatedmean[i] <- round(rdlist[[i]]$beta_p_l,2)
