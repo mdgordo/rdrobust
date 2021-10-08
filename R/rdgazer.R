@@ -16,12 +16,10 @@ rdgazer <- function(rdlist, dvlabs = NULL, xlines = NULL, se_r = "Conventional",
                 se[[i]] <- c(1, rdlist[[i]]$se[se_r,])
                 bw[i] <- round(rdlist[[i]]$bws[1,1],2)
                 nobs[i] <- sum(rdlist[[i]]$N_h)
-                untreatedmean[i] <- round(rdlist[[i]]$beta_p_l,2)
         }
         s <- stargazer(dummymods, type = type, coef = coef, se = se, column.labels = dvlabs,
                        omit.stat = "all", digits = 2, df = FALSE, omit = c("Constant"), 
                        covariate.labels = c("Treatment"),
                        add.lines = c(list(c("N", nobs),
-                                          c("Bandwidth", bw),
-                                          c("Untreated Estimate", untreatedmean)), xlines), ...)
+                                          c("Bandwidth", bw)), xlines), ...)
 }
