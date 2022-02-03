@@ -3,7 +3,7 @@ rdplot = function(y, x, c=0, p=4, nbins = NULL, binselect = "esmv", scale = NULL
                   covs = NULL,  covs_eval = "mean", covs_drop = TRUE,
                   support = NULL, subset = NULL, masspoints = "adjust", silent = TRUE,
                   hide = FALSE, ci = NULL, shade = FALSE, poly = TRUE,
-                  title = NULL, x.label = NULL, y.label = NULL, x.lim = NULL, y.lim = NULL, span = .5) {
+                  title = NULL, x.label = NULL, y.label = NULL, x.lim = NULL, y.lim = NULL, span = NULL, method = NULL) {
 
   if (!is.null(subset)) {
     x <- x[subset]
@@ -517,8 +517,10 @@ rdplot = function(y, x, c=0, p=4, nbins = NULL, binselect = "esmv", scale = NULL
     
     if (poly==FALSE) {
         temp_plot <- temp_plot +
-                geom_smooth(data = filter(data_bins, rdplot_mean_bin >= c), aes(x = rdplot_mean_bin, y = rdplot_mean_y, weight = rdplot_n_wt), span = span)+
-                geom_smooth(data = filter(data_bins, rdplot_mean_bin < c), aes(x = rdplot_mean_bin, y = rdplot_mean_y, weight = rdplot_n_wt), span = span)
+                geom_smooth(data = filter(data_bins, rdplot_mean_bin >= c), aes(x = rdplot_mean_bin, y = rdplot_mean_y, weight = rdplot_n_wt), 
+                            span = span, method = method) +
+                geom_smooth(data = filter(data_bins, rdplot_mean_bin < c), aes(x = rdplot_mean_bin, y = rdplot_mean_y, weight = rdplot_n_wt), 
+                            span = span, method = method)
     } else {
         temp_plot <- temp_plot +
                 geom_line( data=data_poly, aes(x=x_plot_l, y=y_hat_l), na.rm=TRUE) +
