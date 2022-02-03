@@ -3,7 +3,8 @@ rdplot = function(y, x, c=0, p=4, nbins = NULL, binselect = "esmv", scale = NULL
                   covs = NULL,  covs_eval = "mean", covs_drop = TRUE,
                   support = NULL, subset = NULL, masspoints = "adjust", silent = TRUE,
                   hide = FALSE, ci = NULL, shade = FALSE, poly = TRUE,
-                  title = NULL, x.label = NULL, y.label = NULL, x.lim = NULL, y.lim = NULL, span = NULL, method = NULL) {
+                  title = NULL, x.label = NULL, y.label = NULL, x.lim = NULL, y.lim = NULL, 
+                  span = NULL, method = NULL, h = NULL) {
 
   if (!is.null(subset)) {
     x <- x[subset]
@@ -516,10 +517,11 @@ rdplot = function(y, x, c=0, p=4, nbins = NULL, binselect = "esmv", scale = NULL
         geom_point(data=data_bins, aes(x=rdplot_mean_bin, y=rdplot_mean_y, size = rdplot_n_wt), na.rm=TRUE)
     
     if (poly==FALSE) {
+        kwts = abs(1 - rdplot_mean_bin/h)*rdplot_n_wt
         temp_plot <- temp_plot +
-                geom_smooth(data = filter(data_bins, rdplot_mean_bin >= c), aes(x = rdplot_mean_bin, y = rdplot_mean_y, weight = rdplot_n_wt), 
+                geom_smooth(data = filter(data_bins, rdplot_mean_bin >= c), aes(x = rdplot_mean_bin, y = rdplot_mean_y, weight = kwts), 
                             span = span, method = method) +
-                geom_smooth(data = filter(data_bins, rdplot_mean_bin < c), aes(x = rdplot_mean_bin, y = rdplot_mean_y, weight = rdplot_n_wt), 
+                geom_smooth(data = filter(data_bins, rdplot_mean_bin < c), aes(x = rdplot_mean_bin, y = rdplot_mean_y, weight = kwts), 
                             span = span, method = method)
     } else {
         temp_plot <- temp_plot +
