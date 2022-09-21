@@ -520,9 +520,9 @@ rdplot = function(y, x, c=0, p=4, nbins = NULL, binselect = "esmv", scale = NULL
         kwts = abs(1 - rdplot_mean_bin/hplot)*rdplot_n_wt
         temp_plot <- temp_plot +
                 geom_smooth(data = filter(data_bins, rdplot_mean_bin >= c), aes(x = rdplot_mean_bin, y = rdplot_mean_y, weight = kwts), 
-                            span = span, method = method) +
+                            span = span, method = method, se = shade) +
                 geom_smooth(data = filter(data_bins, rdplot_mean_bin < c), aes(x = rdplot_mean_bin, y = rdplot_mean_y, weight = kwts), 
-                            span = span, method = method)
+                            span = span, method = method, se = shade)
     } else {
         temp_plot <- temp_plot +
                 geom_line( data=data_poly, aes(x=x_plot_l, y=y_hat_l), na.rm=TRUE) +
